@@ -1,9 +1,8 @@
-package icu.planeter.muauction.common.filter;
+package icu.planeter.muauction.common;
 
-import com.planeter.w2auction.common.shiro.JWTToken;
-import com.planeter.w2auction.common.utils.JwtUtils;
-import com.planeter.w2auction.entity.User;
-import com.planeter.w2auction.service.UserService;
+import icu.planeter.muauction.common.shiro.Jwt;
+import icu.planeter.muauction.common.utils.JwtUtils;
+import icu.planeter.muauction.entity.User;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +32,7 @@ import java.util.Date;
  */
 @Slf4j
 @Component
-public class JWTAuthFilter extends AuthenticatingFilter {
+public class JwtAuthFilter extends AuthenticatingFilter {
     @Resource
     UserService userService;
     // token更新时间.单位秒
@@ -45,6 +44,7 @@ public class JWTAuthFilter extends AuthenticatingFilter {
     public void init() {
         jwtAuthFilter = this;
     }
+
 
     /**
      * 父第一个被调用的方法
@@ -74,7 +74,7 @@ public class JWTAuthFilter extends AuthenticatingFilter {
 //        String jwtToken = StringUtils.removeStart(header, "Bearer ");
         // 非空且不过期,返回原token
         if (StringUtils.isNotBlank(header) && !JwtUtils.isTokenExpired(header))
-            return new JWTToken(header);
+            return new Jwt(header);
         return null;//进入isAccessAllowed（）的异常处理逻辑
     }
 
@@ -97,8 +97,8 @@ public class JWTAuthFilter extends AuthenticatingFilter {
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) {
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         String newToken = null;
-        if (token instanceof JWTToken) {
-            JWTToken jwtToken = (JWTToken) token;
+        if (token instanceof Jwt) {
+            Jwt jwtToken = (Jwt) token;
             User user = (User) subject.getPrincipal();
             //检查token过期,若过期更新盐生成新token,因为盐的更新,过期token失效
             Date date = JwtUtils.getIssuedAt(jwtToken.getToken());

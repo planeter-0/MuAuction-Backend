@@ -1,7 +1,9 @@
-package icu.planeter.muauction.common.json;
+package icu.planeter.muauction.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import icu.planeter.muauction.common.XSSJacksonDeserializer;
+import icu.planeter.muauction.common.XSSJacksonSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

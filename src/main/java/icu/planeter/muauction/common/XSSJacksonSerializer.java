@@ -1,4 +1,4 @@
-package icu.planeter.muauction.common.json;
+package icu.planeter.muauction.common;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

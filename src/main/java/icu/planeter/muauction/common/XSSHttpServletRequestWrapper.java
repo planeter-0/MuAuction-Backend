@@ -1,32 +1,18 @@
-package icu.planeter.muauction.common.filter;
+package icu.planeter.muauction.common;
 
-
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.web.util.HtmlUtils;
 
-import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.IOException;
 
 /**
- * @description: TODO
  * @author Planeter
- * @date 2021/5/15 0:42
+ * @description: TODO
+ * @date 2021/5/27 20:19
  * @status dev
  */
-@Slf4j
-public class XSSFilter implements Filter {
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        XSSHttpServletRequestWrapper xssHttpServletRequestWrapper = new XSSHttpServletRequestWrapper(request);
-        filterChain.doFilter(xssHttpServletRequestWrapper, servletResponse);
-    }
-}
-
-class XSSHttpServletRequestWrapper extends HttpServletRequestWrapper {
+public class XSSHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     public XSSHttpServletRequestWrapper(HttpServletRequest request) {
         super(request);

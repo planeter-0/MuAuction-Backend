@@ -44,4 +44,10 @@ public class User {
     @ManyToMany
     private List<Role> roles;
 
+    private double balance;
+
+    private double frozenBalance;
+
+    // 0-> disabled, 1-> available
+    private int status;
 }

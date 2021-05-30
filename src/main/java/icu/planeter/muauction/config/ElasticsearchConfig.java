@@ -5,6 +5,7 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,8 +17,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class ElasticsearchConfig {
-
-    String ipPort = "127.0.0.1:9200";
+    @Value("${spring.elasticsearch.rest.ipPort}")
+    String ipPort;
 
     @Bean
     public RestClientBuilder restClientBuilder() {

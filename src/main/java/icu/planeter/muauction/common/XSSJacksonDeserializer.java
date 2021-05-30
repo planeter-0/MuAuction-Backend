@@ -1,4 +1,4 @@
-package icu.planeter.muauction.common.json;
+package icu.planeter.muauction.common;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

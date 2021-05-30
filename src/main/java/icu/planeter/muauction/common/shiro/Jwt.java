@@ -7,15 +7,15 @@ import org.apache.shiro.authc.HostAuthenticationToken;
  * @date 2021/5/15 0:31
  * @status dev
  */
-public class JWT implements HostAuthenticationToken {
+public class Jwt implements HostAuthenticationToken {
     private String token;
     private String host;
 
-    public JWT(String token) {
+    public Jwt(String token) {
         this(token, null);
     }
 
-    public JWT(String token, String host) {
+    public Jwt(String token, String host) {
         this.token = token;
         this.host = host;
     }

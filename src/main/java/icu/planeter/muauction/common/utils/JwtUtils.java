@@ -18,7 +18,7 @@ import java.util.Date;
  * @status dev
  */
 @Slf4j
-public class JWTUtils {
+public class JwtUtils {
 
     public static Date getIssuedAt(String token) {
         try {
