@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.planeter.w2auction.entity.User;
+import icu.planeter.muauction.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -28,10 +28,10 @@ public class JWTCredentialsMatcher implements CredentialsMatcher {
 
         User user = (User) authenticationInfo.getPrincipals().getPrimaryPrincipal();
         try {
-            // jwt verify
+            // Jwt verify
             Algorithm algorithm = Algorithm.HMAC256(salt);
             JWTVerifier verifier = JWT.require(algorithm)
-                    .withClaim("username", user.getUsername())
+                    .withClaim("email", user.getEmail())
                     .build();
             verifier.verify(token);
             return true;

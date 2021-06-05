@@ -2,6 +2,7 @@ server:
   port: 8088
 
 spring:
+
   redis:
     host: 127.0.0.1
     port: 6379
@@ -9,10 +10,9 @@ spring:
       pool:
         max-active: 8
         max-wait: -1
-        max-idle: 500
+        max-idle: 100
         min-idle: 0
-    lettuce:
-      shutdown-timeout: 0
+    timeout: 5000
 
   mail:
     host: smtp.126.com
@@ -20,7 +20,7 @@ spring:
     # 编码格式
     default-encoding: utf-8
     # 用户名
-    username: planeter@163.com
+    username: planeter@126.com
     # 授权码
     password: AKFTIZMKULTWHNSD
     # 其它参数
@@ -38,15 +38,9 @@ spring:
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/w2auction?serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3306/muauction?serverTimezone=GMT%2B8
     username: root
     password: 1a2b3c4dZDQ
-
-  servlet:
-    multipart:
-      enabled: true
-      max-file-size: 100MB
-      max-request-size: 1000MB
 
   jpa:
     database: mysql

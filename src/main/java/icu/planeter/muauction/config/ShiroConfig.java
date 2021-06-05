@@ -1,11 +1,12 @@
 package icu.planeter.muauction.config;
 
-import com.planeter.w2auction.common.filter.CorsFilter;
-import com.planeter.w2auction.common.filter.JwtAuthFilter;
-import com.planeter.w2auction.common.filter.XSSFilter;
-import com.planeter.w2auction.common.shiro.realm.DbShiroRealm;
-import com.planeter.w2auction.common.shiro.realm.JWTShiroRealm;
-import com.planeter.w2auction.service.UserService;
+
+import icu.planeter.muauction.common.CorsFilter;
+import icu.planeter.muauction.common.JwtAuthFilter;
+import icu.planeter.muauction.common.XSSFilter;
+import icu.planeter.muauction.common.shiro.realm.DbShiroRealm;
+import icu.planeter.muauction.common.shiro.realm.JwtShiroRealm;
+import icu.planeter.muauction.service.UserService;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
@@ -74,7 +75,7 @@ public class ShiroConfig {
 
     @Bean("jwtRealm")
     public Realm jwtShiroRealm() {
-        return new JWTShiroRealm();
+        return new JwtShiroRealm();
     }
 
     /**
@@ -123,6 +124,5 @@ public class ShiroConfig {
         defaultAdvisorAutoProxyCreator.setUsePrefix(true);
         return defaultAdvisorAutoProxyCreator;
     }
-
 
 }

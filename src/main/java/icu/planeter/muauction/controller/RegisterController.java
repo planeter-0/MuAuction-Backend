@@ -1,17 +1,20 @@
 package icu.planeter.muauction.controller;
 
+import icu.planeter.muauction.common.response.ResponseCode;
+import icu.planeter.muauction.common.utils.MailUtils;
 import icu.planeter.muauction.service.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.ocsp.ResponseData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import icu.planeter.muauction.common.response.Response;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -19,6 +22,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Planeter
@@ -27,65 +31,49 @@ import java.util.Random;
  * @status dev
  */
 @RestController
+@Slf4j
 @RequestMapping("/tourist")
 public class RegisterController {
 
     @Resource
-    private UserService userService;
+    private JavaMailSender javaMailSender;
+    @Resource
+    RedisTemplate<String,Object> redisTemplate;
+    @Resource
+    UserService userService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${mail.fromMail.sender}")
-    private String sender;// 发送者
+    private String sender;
 
-    @Resource
-    private JavaMailSender javaMailSender;
-
-    private Map<String, Object> resultMap = new HashMap<>();
-
-
-
-    @RequestMapping("/sendEmail")
-    public String sendEmail(String email) {
+    @GetMapping("/sendEmail")
+    public Response<Object> sendEmail(@RequestParam String email) {
         SimpleMailMessage message = new SimpleMailMessage();
-        String code = VerifyCode(6);    //Random generating 6-bit verification code
+        String code = MailUtils.generateCode(6);    //Random generating 6-bit verification code
         message.setFrom(sender);
         message.setTo(email);
-        message.setSubject("博客系统");// 标题
-        message.setText("【博客系统】你的验证码为："+code+"，有效时间为5分钟(若不是本人操作，可忽略该条邮件)");// 内容
+        message.setSubject("MuAuction");
+        message.setText("Hi, Your verification code is: "+code+", which is valid for five minutes (please ignore this email if not yours)");// 内容
         try {
             javaMailSender.send(message);
-            logger.info("文本邮件发送成功！");
-            saveCode(code);
-            return "success";
-        }catch (MailSendException e){
-            logger.error("目标邮箱不存在");
-            return "false";
-        } catch (Exception e) {
-            logger.error("文本邮件发送异常！", e);
-            return "failure";
+            logger.info("Send success!");
+            redisTemplate.opsForValue().set(email,code, 5, TimeUnit.MINUTES);
+            return new Response<>(ResponseCode.SUCCESS);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Response<>(ResponseCode.FAILED);
         }
     }
 
-    private String VerifyCode(int n){
-        Random r = new Random();
-        StringBuffer sb =new StringBuffer();
-        for(int i = 0;i < n;i ++){
-            int randNumber = r.nextInt(10);
-            sb.append(randNumber);
+    @PostMapping("/register")
+    public Response<Object> register(@RequestParam String email, @RequestParam String password, @RequestParam String verifyCode){
+        // Check whether the mailbox is in use
+        if (userService.isValid(email)) {
+            return new Response<>(ResponseCode.FAILED);
         }
-        return sb.toString();
-    }
-
-    //保存验证码和时间
-    private void saveCode(String code){
-        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmss");
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.MINUTE, 5);
-        String currentTime = sf.format(c.getTime());// 生成5分钟后时间，用户校验是否过期
-
-        String hash =  MD5Utils.code(code);//生成MD5值
-        resultMap.put("hash", hash);
-        resultMap.put("tamp", currentTime);
+        // Save user in database, password hashed by Bcrypt algorithm
+        userService.register(email,password);
+        return new Response<>(ResponseCode.SUCCESS);
     }
 }

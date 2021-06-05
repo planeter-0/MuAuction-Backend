@@ -17,11 +17,11 @@ import javax.annotation.Resource;
  * @date 2021/5/15 0:33
  * @status dev
  */
-public class JWTShiroRealm extends AuthorizingRealm {
+public class JwtShiroRealm extends AuthorizingRealm {
     @Resource
     UserService userService;
     // 设置Matcher
-    public JWTShiroRealm(){
+    public JwtShiroRealm(){
         this.setCredentialsMatcher(new JWTCredentialsMatcher());
     }
     /**

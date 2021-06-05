@@ -49,5 +49,11 @@ public class User {
     private double frozenBalance;
 
     // 0-> disabled, 1-> available
-    private int status;
+    private int status = 1;
+
+    public User(String email, String password, List<Role> roles) {
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
 }

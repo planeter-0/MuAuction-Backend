@@ -17,7 +17,7 @@ import java.io.IOException;
  * @status dev
  */
 @Component
-public class CORSFilter implements Filter {
+public class CorsFilter implements Filter {
 
     @Value("${cors.origin}")
     private String origin;

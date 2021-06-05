@@ -2,6 +2,11 @@ package icu.planeter.muauction.repository;
 
 import icu.planeter.muauction.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Planeter
@@ -10,4 +15,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @status dev
  */
 public interface UserRepository extends JpaRepository<User,Long> {
+    User findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
+    void deleteByEmail(String email);
 }
