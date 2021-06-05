@@ -1,4 +1,7 @@
 package icu.planeter.muauction.common.response;
+
+import java.lang.invoke.WrongMethodTypeException;
+
 /**
  * @description: Response status codes with messages
  * @author Planeter
@@ -6,11 +9,21 @@ package icu.planeter.muauction.common.response;
  * @status dev
  */
 public enum ResponseCode {
-
+    // The first two digits indicate the classification and the last two digits indicate the identifier
+    // except SUCCESS and FAILED
     SUCCESS(0, "SUCCESS"),
     FAILED(-1, "ERROR"),
-    NEED_LOGIN(100, "NEED_LOGIN"),
-    ILLEGAL_ARGUMENT(2, "ILLEGAL_ARGUMENT");
+    EmailUsed(1001,"Email Used"),
+    EmailWrong(1002,"Email Wrong"),
+    PasswordWrong(1003,"Password Wrong"),
+    NoSuchRole(1004,"No Such Role"),
+    NoSuchPermission(1005,"No Such Permission"),
+    AccountForbidden(1006,"Account Forbidden"),
+    NoSuchEntity(2001,"No Such Entity"),
+    Sold(2002,"Sold"),
+    UnPassed(2003,"UnPassed"),
+    UploadFailed(3004,"Upload Failed");
+
 
     private final int code;
     private final String message;
