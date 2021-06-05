@@ -32,8 +32,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isEmailValid(String code) {
-        return code.equals(redisTemplate.opsForValue().get("Register-" + code));
+    public boolean isEmailValid(String email, String code) {
+        return code.equals(redisTemplate.opsForValue().get("Register-" + email));
     }
 
     @Override

@@ -36,7 +36,7 @@ public class RegisterController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${mail.fromMail.sender}")
+    @Value("${spring.mail.properties.from}")
     private String sender;
 
     @GetMapping("/sendEmail")
@@ -45,12 +45,12 @@ public class RegisterController {
         String code = MailUtils.generateCode(6);    //Random generating 6-bit verification code
         message.setFrom(sender);
         message.setTo(email);
-        message.setSubject("MuAuction");
+        message.setSubject("MuAuction Register");
         message.setText("Hi, Your verification code is: "+code+", which is valid for five minutes (please ignore this email if not yours)");// 内容
         try {
             javaMailSender.send(message);
             logger.info("Send success!");
-            redisTemplate.opsForValue().set(email,code, 5, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set("Register-"+email,code, 5, TimeUnit.MINUTES);
             return new Response<>(ResponseCode.SUCCESS);
         }catch (Exception e){
             e.printStackTrace();
@@ -61,11 +61,11 @@ public class RegisterController {
     @PostMapping("/register")
     public Response<Object> register(@RequestParam String email, @RequestParam String password, @RequestParam String verifyCode){
         // Check whether the mailbox is in use
-        if (!userService.isEmailExist(email)) {
-            return new Response<>(ResponseCode.FAILED);
+        if (userService.isEmailExist(email)) {
+            return new Response<>(ResponseCode.EmailUsed);
         }
-        if (!userService.isEmailValid(verifyCode)){
-            return new Response<>(ResponseCode.FAILED);
+        if (!userService.isEmailValid(email,verifyCode)){
+            return new Response<>(ResponseCode.VerifyCodeWrong);
         }
         // Save user in database, password hashed by Bcrypt algorithm
         userService.register(email,password);

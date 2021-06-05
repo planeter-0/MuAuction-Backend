@@ -19,6 +19,7 @@ public enum ResponseCode {
     NoSuchRole(1004,"No Such Role"),
     NoSuchPermission(1005,"No Such Permission"),
     AccountForbidden(1006,"Account Forbidden"),
+    VerifyCodeWrong(1007,"VerifyCode Wrong"),
     NoSuchEntity(2001,"No Such Entity"),
     Sold(2002,"Sold"),
     UnPassed(2003,"UnPassed"),

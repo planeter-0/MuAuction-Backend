@@ -102,6 +102,7 @@ public class ShiroConfig {
     protected ShiroFilterChainDefinition shiroFilterChainDefinition() {
         DefaultShiroFilterChainDefinition c = new DefaultShiroFilterChainDefinition();
         //无需认证
+        c.addPathDefinition("/tourist/**","anon,cors");
         c.addPathDefinition("/register", "anon,xss,cors");
         c.addPathDefinition("/login", "anon,xss,cors");
         c.addPathDefinition("/logout", "anon,xss,cors");

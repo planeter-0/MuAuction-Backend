@@ -12,7 +12,7 @@ public interface UserService {
 
     boolean isEmailExist(String email);
 
-    boolean isEmailValid(String code);
+    boolean isEmailValid(String email, String code);
 
     User register(String username, String password);
 
