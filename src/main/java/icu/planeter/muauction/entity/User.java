@@ -35,7 +35,7 @@ public class User {
     private Short gender = 0;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date birthday;
 
     private String icon; //url
@@ -50,6 +50,9 @@ public class User {
 
     // 0-> disabled, 1-> available
     private int status = 1;
+
+    @OneToMany
+    private List<Item> items;
 
     public User(String email, String password, List<Role> roles) {
         this.email = email;

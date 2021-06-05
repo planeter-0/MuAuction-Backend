@@ -4,24 +4,16 @@ import icu.planeter.muauction.common.response.ResponseCode;
 import icu.planeter.muauction.common.utils.MailUtils;
 import icu.planeter.muauction.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.asn1.ocsp.ResponseData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import icu.planeter.muauction.common.response.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,7 +61,10 @@ public class RegisterController {
     @PostMapping("/register")
     public Response<Object> register(@RequestParam String email, @RequestParam String password, @RequestParam String verifyCode){
         // Check whether the mailbox is in use
-        if (userService.isValid(email)) {
+        if (!userService.isEmailExist(email)) {
+            return new Response<>(ResponseCode.FAILED);
+        }
+        if (!userService.isEmailValid(verifyCode)){
             return new Response<>(ResponseCode.FAILED);
         }
         // Save user in database, password hashed by Bcrypt algorithm

@@ -1,6 +1,5 @@
 package icu.planeter.muauction.service;
 
-import icu.planeter.muauction.dto.UserInfo;
 import icu.planeter.muauction.entity.User;
 
 /**
@@ -11,7 +10,15 @@ import icu.planeter.muauction.entity.User;
  */
 public interface UserService {
 
-    boolean isValid(String email);
+    boolean isEmailExist(String email);
+
+    boolean isEmailValid(String code);
 
     User register(String username, String password);
+
+    User findByEmail(String email);
+
+    String getJwt(String email);
+
+    String generateJwtToken(String email);
 }

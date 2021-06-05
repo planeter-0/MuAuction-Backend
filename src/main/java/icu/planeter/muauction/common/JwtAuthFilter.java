@@ -3,6 +3,7 @@ package icu.planeter.muauction.common;
 import icu.planeter.muauction.common.shiro.Jwt;
 import icu.planeter.muauction.common.utils.JwtUtils;
 import icu.planeter.muauction.entity.User;
+import icu.planeter.muauction.service.UserService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -104,7 +105,7 @@ public class JwtAuthFilter extends AuthenticatingFilter {
             Date date = JwtUtils.getIssuedAt(jwtToken.getToken());
             assert date != null;
             if (shouldTokenRefresh(date)) {
-                newToken = jwtAuthFilter.userService.generateJwtToken(user.getUsername());
+                newToken = jwtAuthFilter.userService.generateJwtToken(user.getEmail());
             }
         }
         // 新token被加入响应头

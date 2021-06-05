@@ -10,7 +10,12 @@ import java.io.Serializable;
  * @status dev
  */
 @Data
-public class UserInfo implements Serializable {
+public class JwtUser implements Serializable {
     String email;
-    String password;
+    String jwt;
+
+    public JwtUser(String email, String token) {
+        this.email = email;
+        this.jwt = token;
+    }
 }

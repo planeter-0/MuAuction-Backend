@@ -1,6 +1,11 @@
 package icu.planeter.muauction.common.shiro.realm;
 
+import icu.planeter.muauction.common.shiro.Jwt;
 import icu.planeter.muauction.common.shiro.matcher.JWTCredentialsMatcher;
+import icu.planeter.muauction.common.utils.JwtUtils;
+import icu.planeter.muauction.dto.JwtUser;
+import icu.planeter.muauction.entity.User;
+import icu.planeter.muauction.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -29,7 +34,7 @@ public class JwtShiroRealm extends AuthorizingRealm {
      */
     @Override
     public boolean supports(AuthenticationToken token) {
-        return token instanceof JWTToken;
+        return token instanceof Jwt;
     }
     /**
      * JWTRealm只负责登陆后的请求认证
@@ -46,14 +51,16 @@ public class JwtShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authToken) throws AuthenticationException {
-        JWTToken jwtToken = (JWTToken) authToken;
+        Jwt jwtToken = (Jwt) authToken;
         String token = jwtToken.getToken();
-        User user = userService.getJwtUser(JwtUtils.getUsername(token));
+        String email = JwtUtils.getUsername(token);
+        User user = userService.findByEmail(email);
+        String tokenInCache = userService.getJwt(email);
         if(user == null)
-            throw new AuthenticationException("token过期，请重新登录");
+            throw new AuthenticationException("Token expired, please login again");
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 user, //principal
-                user.getSalt(), //credential
+                token, //credential
                 getName()); // realmName
         return authenticationInfo;
     }
