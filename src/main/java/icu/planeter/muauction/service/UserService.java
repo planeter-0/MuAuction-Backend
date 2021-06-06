@@ -20,5 +20,7 @@ public interface UserService {
 
     String getJwt(String email);
 
+    void deleteJwtUser(String email);
+
     String generateJwtToken(String email);
 }

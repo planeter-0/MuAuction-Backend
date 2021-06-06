@@ -34,8 +34,6 @@ public class RegisterController {
     @Resource
     UserService userService;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Value("${spring.mail.properties.from}")
     private String sender;
 
@@ -49,7 +47,7 @@ public class RegisterController {
         message.setText("Hi, Your verification code is: "+code+", which is valid for five minutes (please ignore this email if not yours)");// 内容
         try {
             javaMailSender.send(message);
-            logger.info("Send success!");
+            log.info("Send success!");
             redisTemplate.opsForValue().set("Register-"+email,code, 5, TimeUnit.MINUTES);
             return new Response<>(ResponseCode.SUCCESS);
         }catch (Exception e){

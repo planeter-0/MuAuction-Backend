@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImp implements UserService {
     @Resource
     UserRepository userDao;
     @Resource
