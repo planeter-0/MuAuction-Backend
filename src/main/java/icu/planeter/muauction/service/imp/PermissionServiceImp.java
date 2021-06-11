@@ -30,7 +30,7 @@ public class PermissionServiceImp implements PermissionService {
         dynamicOrderPermissions.add("order:view:");
         dynamicOrderPermissions.add("order:update:");
     }
-    //TODO 缓存用户权限
+    //TODO Cache
     @Override
     public List<String> getPermissionsByUsername(User user) {
         List<String> permissionStrList = new ArrayList<>();

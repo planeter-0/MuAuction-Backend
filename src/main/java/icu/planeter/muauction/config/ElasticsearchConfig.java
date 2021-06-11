@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @description: TODO
+ * @description: Elasticsearch Config
  * @author Planeter
  * @date 2021/5/15 0:39
  * @status dev

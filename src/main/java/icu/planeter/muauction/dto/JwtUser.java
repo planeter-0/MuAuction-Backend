@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 /**
- * @description: TODO
+ * @description: JwtUser
  * @author Planeter
  * @date 2021/5/27 20:33
  * @status dev

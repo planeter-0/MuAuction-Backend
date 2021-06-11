@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 /**
  * @author Planeter
- * @description: TODO
+ * @description: SellRecord
  * @date 2021/6/11 20:56
  * @status dev
  */

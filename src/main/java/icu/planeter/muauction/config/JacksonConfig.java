@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @description: TODO
+ * @description: Jackson Config
  * @author Planeter
  * @date 2021/5/15 0:41
  * @status dev
