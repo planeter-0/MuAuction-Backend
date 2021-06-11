@@ -62,6 +62,12 @@ public class UserServiceImp implements UserService {
     public String getJwt(String email) {
         return (String) redisTemplate.opsForValue().get("Jwt-"+email);
     }
+
+    @Override
+    public void deleteJwtUser(String email) {
+        redisTemplate.delete("Jwt-"+email);
+    }
+
     @Override
     public String generateJwtToken(String email) {
         String salt = JwtUtils.generateSalt();

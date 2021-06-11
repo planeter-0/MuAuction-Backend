@@ -8,6 +8,7 @@ import icu.planeter.muauction.repository.ItemRepository;
 import icu.planeter.muauction.repository.UserRepository;
 import icu.planeter.muauction.service.BidService;
 import org.apache.shiro.SecurityUtils;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
  * @date 2021/6/11 19:22
  * @status dev
  */
+@Service
 public class BidServiceImp implements BidService {
     @Resource
     BidRepository bidDao;
