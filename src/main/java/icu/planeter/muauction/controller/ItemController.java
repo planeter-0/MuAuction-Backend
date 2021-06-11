@@ -32,7 +32,7 @@ public class ItemController {
      * @param item name, price, detail, images(<String>"url1,url2,..."), tags<String>
      * @return ResponseCode
      */
-    @PostMapping("/auctionItem")
+    @PostMapping("/item/auction")
     Response<Object> auctionItem(@RequestBody Item item) {
         try {
             itemService.auctionItem(item);
@@ -79,6 +79,13 @@ public class ItemController {
     @GetMapping("/item/{itemId}")
     Response<Item> getItem(@PathVariable Long itemId) {
         return new Response<>(ResponseCode.SUCCESS, itemService.getItem(itemId));
+    }
+
+    @PutMapping("/item/sell")
+    Response<Item> sell(@RequestParam Long itemId) {
+        if(itemService.sellOne(itemId))
+            return new Response<>(ResponseCode.SUCCESS);
+        else return  new Response<>(ResponseCode.NoSuchPermission);//Not the owner
     }
 
     @PutMapping("/item/confirmReceipt")

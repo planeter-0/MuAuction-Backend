@@ -20,4 +20,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     boolean existsByEmail(String email);
 
     void deleteByEmail(String email);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User AS u SET u.balance = u.balance+:quantity WHERE u.id = :userId")
+    void charging(Long userId, Double quantity);
 }
