@@ -2,9 +2,14 @@ package icu.planeter.muauction.service.imp;
 
 import icu.planeter.muauction.common.utils.ElasticsearchUtils;
 import icu.planeter.muauction.common.utils.MailUtils;
+import icu.planeter.muauction.entity.Bid;
 import icu.planeter.muauction.entity.Item;
+import icu.planeter.muauction.entity.SellRecord;
 import icu.planeter.muauction.entity.User;
+import icu.planeter.muauction.repository.BidRepository;
 import icu.planeter.muauction.repository.ItemRepository;
+import icu.planeter.muauction.repository.SellRecordRepository;
+import icu.planeter.muauction.service.BidService;
 import icu.planeter.muauction.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -20,12 +25,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.*;
 
 /**
  * @author Planeter
- * @description: TODO
+ * @description: ItemService Implement
  * @date 2021/6/6 12:52
  * @status dev
  */
@@ -38,6 +42,12 @@ public class ItemServiceImp implements ItemService {
     private JavaMailSender javaMailSender;
     @Resource
     private ElasticsearchUtils elasticsearchUtils;
+    @Resource
+    private BidService bidService;
+    @Resource
+    private BidRepository bidDao;
+    @Resource
+    private SellRecordRepository sellRecordDao;
 
     @Value("${spring.mail.properties.from}")
     private String sender;
@@ -70,19 +80,57 @@ public class ItemServiceImp implements ItemService {
     @Override
     public Map<String, List<Item>> getMine(User user) {
         Map<String, List<Item>> resultMap = new HashMap<>();
-        List<Item> unsold = new ArrayList<>();
-        List<Item> sold = new ArrayList<>();
-        unsold.addAll(itemDao.findByStatusAndUser(0,user));
-        sold.addAll(itemDao.findByStatusAndUser(1,user));
+        List<Item> unsold = new ArrayList<>(itemDao.findByStatusAndUser(0, user));
+        List<Item> sold = new ArrayList<>(itemDao.findByStatusAndUser(1, user));
         resultMap.put("unsold",unsold);
         resultMap.put("sold", sold);
         return resultMap;
     }
 
     @Override
-    public List<Map<String, Object>> search(String key, Integer size, Integer from, String sortField, String sortOrder) throws IOException {
-        MultiMatchQueryBuilder matchQuery = null;
-        QueryBuilder totalFilter = null;
+    public boolean sellOne(Long bidId) {
+        Bid bid = bidDao.getOne(bidId);
+        Item item =  bid.getItem();
+        User seller = (User) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+        // Check whether it is the owner
+        if(!seller.getId().equals(item.getUser().getId()))
+            return false;
+        // Set status to "sold"
+        item.setStatus(1);
+        // Generate sell record
+        sellRecordDao.save(new SellRecord(seller.getId(),bid.getUser().getId(),true));
+        // Unfreeze other failed bids if they have not been unfreezed before
+        List<Bid> others = bidDao.findByItemAndActive(item,true);
+        System.out.println(others.remove(bid));
+        for(Bid b:others){
+            bidService.cancel(b.getId());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean confirmReceipt(Long bidId) {
+        User buyer = (User) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+        Bid bid = bidDao.getOne(bidId);
+        // Received item cannot be reconfirmed
+        if(bid.getSellRecord().isReceived())
+            return false;
+        // Set status of bid
+        bid.setActive(false);
+        bidDao.save(bid);
+        // Reduce buyer's balance
+        buyer.setFrozenBalance(buyer.getFrozenBalance()-bid.getPrice());
+        buyer.setBalance(buyer.getBalance()-bid.getPrice());
+        // Increase seller's balance
+        User seller = bid.getItem().getUser();
+        seller.setBalance(seller.getBalance()+bid.getPrice());
+        return true;
+    }
+
+    @Override
+    public List<Map<String, Object>> search(String key, Integer size, Integer from, String sortField, String sortOrder) {
+        MultiMatchQueryBuilder matchQuery;
+        QueryBuilder totalFilter;
         if (!key.equals("*")) {
 
             matchQuery = QueryBuilders.multiMatchQuery(key, "name", "detail", "tags").analyzer("ik_max_word");
