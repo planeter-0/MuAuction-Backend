@@ -14,6 +14,7 @@ import org.bouncycastle.asn1.ocsp.ResponseData;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2021/6/6 13:15
  * @status dev
  */
+@RestController
 public class LoginController {
     @Resource
     UserService userService;

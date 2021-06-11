@@ -4,8 +4,6 @@ import icu.planeter.muauction.common.response.ResponseCode;
 import icu.planeter.muauction.common.utils.MailUtils;
 import icu.planeter.muauction.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import icu.planeter.muauction.common.response.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;

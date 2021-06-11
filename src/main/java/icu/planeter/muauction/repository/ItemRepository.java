@@ -5,6 +5,7 @@ import icu.planeter.muauction.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,4 +16,5 @@ import java.util.List;
  */
 public interface ItemRepository extends JpaRepository<Item,Long> {
     List<Item> findByStatusAndUser(Integer status, User user);
+    List<Item> findFirst10ByStatusOrderByCreateTimeDesc(Integer status);
 }
