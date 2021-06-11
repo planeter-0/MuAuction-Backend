@@ -1,6 +1,8 @@
 package icu.planeter.muauction.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,6 +14,7 @@ import java.util.Date;
 public class Bid {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @ManyToOne
@@ -35,6 +38,9 @@ public class Bid {
     // Frozen state of funds
     private Boolean active;
 
+    @OneToOne
+    SellRecord sellRecord;
+
     public Bid(User user, Double price, Item item, String address, String comment, Boolean active) {
         this.user = user;
         this.price = price;
@@ -42,5 +48,9 @@ public class Bid {
         this.address = address;
         this.comment = comment;
         this.active = active;
+    }
+
+    public Bid() {
+
     }
 }

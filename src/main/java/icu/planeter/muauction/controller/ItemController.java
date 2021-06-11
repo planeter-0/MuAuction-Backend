@@ -1,20 +1,16 @@
 package icu.planeter.muauction.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+
 import icu.planeter.muauction.common.response.Response;
 import icu.planeter.muauction.common.response.ResponseCode;
 import icu.planeter.muauction.entity.Item;
 import icu.planeter.muauction.entity.User;
 import icu.planeter.muauction.service.ItemService;
-import icu.planeter.muauction.service.UserService;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
-import org.bouncycastle.asn1.ocsp.ResponseData;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -27,8 +23,7 @@ import java.util.*;
 public class ItemController {
     @Resource
     ItemService itemService;
-    @Resource
-    UserService userService;
+
 
 
     /**
@@ -51,9 +46,9 @@ public class ItemController {
     /**
      * Get all auction items of the current user with classification -- sold, unsold
      *
-     * @return Map<String, List<Item>>
+     * @return Map<String, List < Item>>
      */
-    @GetMapping("/getMine")
+    @GetMapping("/item/getMine")
     public Response<Map<String, List<Item>>> getMine() {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         return new Response<>(ResponseCode.SUCCESS, itemService.getMine(user));
@@ -62,15 +57,15 @@ public class ItemController {
     /**
      * Fuzzy search(Use Elasticsearch)
      *
-     * @param text
+     * @param text Search items
      * @return List<Map < String, Object>> namely Item(Json Str)
      */
     @GetMapping("/search")
     public Response<List<Map<String, Object>>> getAllVerifiedItem(@RequestParam String text,
-                                            @RequestParam(defaultValue = "10") Integer size,
-                                            @RequestParam(defaultValue = "0") Integer from,
-                                            @RequestParam(defaultValue = "") String sortField,
-                                            @RequestParam(defaultValue = "") String sortOrder) {
+                                                                  @RequestParam(defaultValue = "10") Integer size,
+                                                                  @RequestParam(defaultValue = "0") Integer from,
+                                                                  @RequestParam(defaultValue = "") String sortField,
+                                                                  @RequestParam(defaultValue = "") String sortOrder) {
         return new Response<>(ResponseCode.SUCCESS, itemService.search(text, size, from, sortField, sortOrder));
     }
 
@@ -83,7 +78,16 @@ public class ItemController {
      */
     @GetMapping("/item/{itemId}")
     Response<Item> getItem(@PathVariable Long itemId) {
-        return new Response<>(ResponseCode.SUCCESS, itemService.getItem(itemId););
+        return new Response<>(ResponseCode.SUCCESS, itemService.getItem(itemId));
     }
 
+    @PutMapping("/item/confirmReceipt")
+    public Response<Object> confirmReceipt(@RequestParam Long bidId) {
+        // Try to transfer the fund of the bid if receipt not confirmed before
+        if(itemService.confirmReceipt(bidId)){
+            return new Response<>(ResponseCode.SUCCESS);
+        }
+        // Cannot confirmed receipt again
+        return new Response<>(ResponseCode.DuplicateConfirm);
+    }
 }

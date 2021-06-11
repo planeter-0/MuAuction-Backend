@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * @description: TODO
+ * @description: ShiroConfig
  * @author Planeter
  * @date 2021/5/15 0:43
  * @status dev
@@ -101,16 +101,19 @@ public class ShiroConfig {
     @Bean
     protected ShiroFilterChainDefinition shiroFilterChainDefinition() {
         DefaultShiroFilterChainDefinition c = new DefaultShiroFilterChainDefinition();
-        //无需认证
-        c.addPathDefinition("/tourist/**","anon,cors");
-        c.addPathDefinition("/register", "anon,xss,cors");
-        c.addPathDefinition("/login", "anon,xss,cors");
-        c.addPathDefinition("/logout", "anon,xss,cors");
-        c.addPathDefinition("/item/**","anon,xss,cors");
-        c.addPathDefinition("/searchItem","anon,cors");
-        c.addPathDefinition("/image/**","anon,cors");
-        //其他路径均需要jwt过滤器通过
-        c.addPathDefinition("/**", "noSessionCreation,jwt,xss,cors");
+//        //No certification required
+//        c.addPathDefinition("/tourist/**","anon,cors");
+//        c.addPathDefinition("/register", "anon,xss,cors");
+//        c.addPathDefinition("/login", "anon,xss,cors");
+//        c.addPathDefinition("/logout", "anon,xss,cors");
+//        c.addPathDefinition("/item/**","anon,xss,cors");
+//        c.addPathDefinition("/searchItem","anon,cors");
+//        c.addPathDefinition("/image/**","anon,cors");
+//        //Jwt
+//        c.addPathDefinition("/**", "noSessionCreation,jwt,xss,cors");
+
+        //Close Jwt in order to reduce the front-end work :)
+        c.addPathDefinition("/**","anon,cors,xss");
         return c;
     }
     /**

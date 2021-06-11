@@ -21,8 +21,10 @@ public enum ResponseCode {
     AccountForbidden(1006,"Account Forbidden"),
     VerifyCodeWrong(1007,"VerifyCode Wrong"),
     NoSuchEntity(2001,"No Such Entity"),
-    Sold(2002,"Sold"),
+    Sold(2002,"Item have been sold"),
     UnPassed(2003,"UnPassed"),
+    BalanceNotEnough(2004,"Insufficient unfrozen balance"),
+    DuplicateConfirm(2005,"You can't confirm receipt twice"),
     UploadFailed(3004,"Upload Failed");
 
 

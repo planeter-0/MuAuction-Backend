@@ -59,4 +59,9 @@ public class User {
         this.password = password;
         this.roles = roles;
     }
+
+    public double getUnfrozenBalance(){
+        return (balance - frozenBalance);
+    }
+
 }
