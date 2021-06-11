@@ -2,6 +2,7 @@ package icu.planeter.muauction.common.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import icu.planeter.muauction.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -48,7 +49,7 @@ import java.util.UUID;
  * @status dev
  */
 @Slf4j
-@Component("esUtils")
+@Component()
 public class ElasticsearchUtils {
 
     @Resource
@@ -302,13 +303,13 @@ public class ElasticsearchUtils {
      * @return
      */
     public List<Map<String, Object>> searchListData(String index,
-                                                    SearchSourceBuilder query,
-                                                    Integer size,
-                                                    Integer from,
-                                                    String fields,
-                                                    String sortField,
-                                                    SortOrder sortOrder,
-                                                    String highlightField) throws IOException {
+                                                           SearchSourceBuilder query,
+                                                           Integer size,
+                                                           Integer from,
+                                                           String fields,
+                                                           String sortField,
+                                                           SortOrder sortOrder,
+                                                           String highlightField) throws IOException {
         SearchRequest request = new SearchRequest(index);
         SearchSourceBuilder builder = query;
         if (StringUtils.isNotEmpty(fields)){

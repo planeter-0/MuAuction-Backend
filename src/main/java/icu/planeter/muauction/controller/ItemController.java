@@ -30,68 +30,60 @@ public class ItemController {
     @Resource
     UserService userService;
 
+
     /**
-     * Fuzzy search(use Elasticsearch)
+     * Auction an item
+     *
+     * @param item name, price, detail, images(<String>"url1,url2,..."), tags<String>
+     * @return ResponseCode
+     */
+    @PostMapping("/auctionItem")
+    Response<Object> auctionItem(@RequestBody Item item) {
+        try {
+            itemService.auctionItem(item);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response<>(ResponseCode.FAILED);
+        }
+        return new Response<>(ResponseCode.SUCCESS);
+    }
+
+    /**
+     * Get all auction items of the current user with classification -- sold, unsold
+     *
+     * @return Map<String, List<Item>>
+     */
+    @GetMapping("/getMine")
+    public Response<Map<String, List<Item>>> getMine() {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        return new Response<>(ResponseCode.SUCCESS, itemService.getMine(user));
+    }
+
+    /**
+     * Fuzzy search(Use Elasticsearch)
      *
      * @param text
-     * @return List<Map < String, Object>>
+     * @return List<Map < String, Object>> namely Item(Json Str)
      */
-    @GetMapping("/searchItem")
-    Response<List<Item>> getAllVerifiedItem(@RequestParam String text,
+    @GetMapping("/search")
+    public Response<List<Map<String, Object>>> getAllVerifiedItem(@RequestParam String text,
                                             @RequestParam(defaultValue = "10") Integer size,
                                             @RequestParam(defaultValue = "0") Integer from,
                                             @RequestParam(defaultValue = "") String sortField,
-                                            @RequestParam(defaultValue = "") String sortOrder) throws IOException {
-        //TODO elasticsearch 使用key进行关键字搜索
+                                            @RequestParam(defaultValue = "") String sortOrder) {
         return new Response<>(ResponseCode.SUCCESS, itemService.search(text, size, from, sortField, sortOrder));
     }
 
 
     /**
-     * 物品的详细信息
+     * Access an item by ID
      *
-     * @param itemId 物品id
-     * @return List<Object> 含Item和User
+     * @param itemId item id
+     * @return Item
      */
     @GetMapping("/item/{itemId}")
-    ResponseData getItem(@PathVariable Long itemId) {
-        //TODO mybatis select 组装 itemDetail dto 减少数据库连接次数
-        List<Object> data = new ArrayList<>();
-        ItemFront i = DtoUtils.toItemFront(itemService.getItem(itemId));
-        UserFront u = DtoUtils.toUserFront(userService.findByUsername(i.getUsername()));
-        JSONObject itemJson = JSON.parseObject(JSONObject.toJSONString(i));
-        JSONObject userJson = JSON.parseObject((JSONObject.toJSONString(u)));
-        Map<String, JSONObject> result = new HashMap<>();
-        result.put("item", itemJson);
-        result.put("user", userJson);
-        return new ResponseData(ExceptionMsg.SUCCESS, result);
+    Response<Item> getItem(@PathVariable Long itemId) {
+        return new Response<>(ResponseCode.SUCCESS, itemService.getItem(itemId););
     }
 
-    /**
-     * auction item
-     *
-     * @param item
-     * @return
-     */
-    @PostMapping("/auctionItem")
-    Response<Object> auctionItem(@RequestBody Item item) {
-        Subject subject = SecurityUtils.getSubject();
-        if (subject.getPrincipals() != null) {
-            User user = (User) subject.getPrincipals().getPrimaryPrincipal();
-            itemService.auctionItem(item);
-            return new Response<>(ResponseCode.SUCCESS);
-        }
-        return new Response<>(ResponseCode.FAILED);
-    }
-
-    /**
-     * 获取自己上传的物品
-     * @param type 0->未售出, 1->已售出, 2->全部
-     * @return List<ItemFront>
-     */
-    @GetMapping("/getMyItems")
-    public ResponseData getMine(@RequestParam Integer type) {
-        User user = (User) SecurityUtils.getSubject().getPrincipal();
-        return new ResponseData(ExceptionMsg.SUCCESS, itemService.getMine(user.getUsername(), type));
-    }
 }
