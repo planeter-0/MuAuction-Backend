@@ -32,19 +32,18 @@ public class QiniuUtils {
     private static final String AK = "1H0ZQ2L-dMN2_0E090sRwD1VsTd1TQV1X8cTwWcC";
     private static final String SK = "qmfitv_YYiuP8vLiP-n9_kYKjIJoxDGYZ3A8ftdd";
     private static final String bucket = "acution";
-    public static final String origin="qrnf5hoyf.hn-bkt.clouddn.com";//七牛提供的外链域名, 一个月到期
+    public static final String origin="qrnf5hoyf.hn-bkt.clouddn.com";
     private static final Auth auth = Auth.create(AK, SK);
-
 
 //    public static String getUpToken() {
 //        return auth.uploadToken(bucket, null, 3600, new StringMap().put("insertOnly", 1));
 //    }
 
     /**
-     * 业务服务器文件上传
-     * @param localFilePath 文件路径
-     * @param key 文件名
-     * @return 文件url
+     * Local file upload
+     * @param localFilePath
+     * @param key filename
+     * @return file url
      */
     public static String upload(String localFilePath,String key){
 
@@ -71,9 +70,9 @@ public class QiniuUtils {
     }
 
     /**
-     * 文件流上传
+     * File stream upload
      * @param file
-     * @param key 文件名
+     * @param key filename
      * @return
      */
     public static String InputStreamUpload(FileInputStream file, String key){
@@ -103,9 +102,9 @@ public class QiniuUtils {
     }
 
     /**
-     * 以UUID重命名
+     * Rename picture with UUID
      * @param fileName
-     * @return
+     * @return new name
      */
     public static String renamePic(String fileName){
         String extName = fileName.substring(fileName.lastIndexOf("."));
@@ -120,23 +119,23 @@ public class QiniuUtils {
         extMap.put("image", "gif,jpg,jpeg,png,bmp");
 
         if(!ServletFileUpload.isMultipartContent(request)){
-            return "请选择文件";
+            return "Please select file";
         }
 
         if(file.getSize() > maxSize){
-            return "上传文件大小超过5MB限制";
+            return "Upload file size exceeds 5MB limit";
         }
         //检查扩展名
         String fileName=file.getOriginalFilename();
         String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
         if(!Arrays.<String>asList(extMap.get("image").split(",")).contains(fileExt)){
-            return "上传文件扩展名是不允许的扩展名\n只允许" + extMap.get("image") + "格式";
+            return "Upload file extension is not allowed \nOnly " + extMap.get("image") + "are allowed.";
         }
         return "valid";
     }
 
     /**
-     * 检查文件扩展名
+     * Check file extension
      * @param fileName
      * @param dirName
      * @return
@@ -150,7 +149,7 @@ public class QiniuUtils {
         //检查扩展名
         String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
         if(!Arrays.asList(extMap.get(dirName).split(",")).contains(fileExt)){
-            return "上传文件扩展名是不允许的扩展名\n只允许" + extMap.get(dirName) + "格式";
+            return "Upload file extension is not allowed \nOnly " + extMap.get(dirName) + "are allowed.";
         }
         return "valid";
     }

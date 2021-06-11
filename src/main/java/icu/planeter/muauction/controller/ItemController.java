@@ -70,7 +70,7 @@ public class ItemController {
     /**
      * auction item
      *
-     * @param upload
+     * @param item
      * @return
      */
     @PostMapping("/auctionItem")
@@ -79,29 +79,9 @@ public class ItemController {
         if (subject.getPrincipals() != null) {
             User user = (User) subject.getPrincipals().getPrimaryPrincipal();
             itemService.auctionItem(item);
-            return new ResponseData(ExceptionMsg.SUCCESS);
+            return new Response<>(ResponseCode.SUCCESS);
         }
-        return new ResponseData(ExceptionMsg.FAILED);
-    }
-
-    /**
-     * 删除物品
-     *
-     * @param itemId 所删除物品id
-     * @return
-     */
-    @DeleteMapping("/deleteItem")
-    ResponseData deleteItem(@RequestParam Long itemId) {
-        Item i = itemService.getItem(itemId);
-        if (i.isSold())
-            return new ResponseData(ExceptionMsg.FAILED, "该物品已售出");
-        Subject s = SecurityUtils.getSubject();
-        if (s.isPermitted("item:delete:" + itemId)) {
-            itemService.deleteById(itemId);
-            esItemService.delete(itemId);
-            return new ResponseData(ExceptionMsg.SUCCESS);
-        }
-        return new ResponseData(ExceptionMsg.NoSuchPermission);
+        return new Response<>(ResponseCode.FAILED);
     }
 
     /**

@@ -39,12 +39,12 @@ public class RegisterController {
 
     @GetMapping("/sendEmail")
     public Response<Object> sendEmail(@RequestParam String email) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        String code = MailUtils.generateCode(6);    //Random generating 6-bit verification code
-        message.setFrom(sender);
-        message.setTo(email);
-        message.setSubject("MuAuction Register");
-        message.setText("Hi, Your verification code is: "+code+", which is valid for five minutes (please ignore this email if not yours)");// 内容
+        // Random generating 6-bit verification code
+        String code = MailUtils.generateCode(6);
+        SimpleMailMessage message = MailUtils.generateEmail
+                (sender, email,
+                "MuAuction Register",
+                "Hi, Your verification code is: "+code+", which is valid for five minutes (please ignore this email if not yours)");
         try {
             javaMailSender.send(message);
             log.info("Send success!");
