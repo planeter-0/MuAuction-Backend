@@ -25,13 +25,10 @@ public class ImageController {
      * Upload image, return url
      *
      * @param uploadFile
-     * @param request
      * @return url
      */
     @PostMapping(value = "/image/upload")
-    public Response<String> uploadFile(@RequestParam("image") MultipartFile uploadFile,
-                                       @RequestParam Integer type,
-                                       HttpServletRequest request) {
+    public Response<String> uploadFile(@RequestParam("image") MultipartFile uploadFile) {
         String url = null;
         try {
             //Rename with UUID

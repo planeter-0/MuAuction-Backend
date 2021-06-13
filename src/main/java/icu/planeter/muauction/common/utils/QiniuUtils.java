@@ -31,8 +31,8 @@ public class QiniuUtils {
      */
     private static final String AK = "1H0ZQ2L-dMN2_0E090sRwD1VsTd1TQV1X8cTwWcC";
     private static final String SK = "qmfitv_YYiuP8vLiP-n9_kYKjIJoxDGYZ3A8ftdd";
-    private static final String bucket = "acution";
-    public static final String origin="qrnf5hoyf.hn-bkt.clouddn.com";
+    private static final String bucket = "muauction";
+    public static final String origin="qtrl2mi2j.hn-bkt.clouddn.com";
     private static final Auth auth = Auth.create(AK, SK);
 
 //    public static String getUpToken() {
