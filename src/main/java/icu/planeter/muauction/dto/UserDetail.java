@@ -18,7 +18,6 @@ import java.util.List;
  */
 @Data
 public class UserDetail {
-    private String email;
 
     private String nickname;
 

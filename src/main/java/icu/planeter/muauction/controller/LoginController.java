@@ -10,7 +10,6 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.bouncycastle.asn1.ocsp.ResponseData;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,9 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Planeter
- * @description: TODO
+ * @description: Login Controller
  * @date 2021/6/6 13:15
- * @status dev
+ * @status OK
  */
 @RestController
 public class LoginController {

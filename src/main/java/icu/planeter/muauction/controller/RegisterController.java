@@ -16,9 +16,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Planeter
- * @description: TODO
+ * @description: Register Controller
  * @date 2021/5/27 20:40
- * @status dev
+ * @status OK
  */
 @RestController
 @Slf4j

@@ -15,9 +15,9 @@ import javax.annotation.Resource;
 
 /**
  * @author Planeter
- * @description: TODO
+ * @description: User Controller
  * @date 2021/6/11 22:06
- * @status dev
+ * @status OK
  */
 @RestController
 public class UserController {
@@ -26,7 +26,6 @@ public class UserController {
     @PutMapping("/editDetails")
     public Response<Object> editDetails(@RequestBody UserDetail detail){
         User user = (User) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-        user.setEmail(detail.getEmail());
         user.setAddress(detail.getAddress());
         user.setPhone(detail.getPhone());
         user.setGender(detail.getGender());

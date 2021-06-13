@@ -13,15 +13,21 @@ import javax.annotation.Resource;
  * @author Planeter
  * @description: TODO
  * @date 2021/6/11 23:17
- * @status dev
+ * @status OK
  */
 @RestController
 public class ChargeController {
     @Resource
     UserRepository userRepository;
+
     @PutMapping("/charging")
     public Response<Object> cancel(@RequestParam Long userId, @RequestParam Double quantity) {
-        userRepository.charging(userId,quantity);
+        try {
+            userRepository.charging(userId, quantity);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Response<>(ResponseCode.FAILED);
+        }
         return new Response<>(ResponseCode.SUCCESS);
     }
 }
