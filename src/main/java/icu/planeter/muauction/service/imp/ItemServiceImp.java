@@ -9,6 +9,7 @@ import icu.planeter.muauction.entity.User;
 import icu.planeter.muauction.repository.BidRepository;
 import icu.planeter.muauction.repository.ItemRepository;
 import icu.planeter.muauction.repository.SellRecordRepository;
+import icu.planeter.muauction.repository.UserRepository;
 import icu.planeter.muauction.service.BidService;
 import icu.planeter.muauction.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,8 @@ public class ItemServiceImp implements ItemService {
     private BidRepository bidDao;
     @Resource
     private SellRecordRepository sellRecordDao;
+    @Resource
+    private UserRepository userDao;
 
     @Value("${spring.mail.properties.from}")
     private String sender;
@@ -92,13 +95,15 @@ public class ItemServiceImp implements ItemService {
         Bid bid = bidDao.getOne(bidId);
         Item item =  bid.getItem();
         User seller = (User) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+        User buyer = bid.getUser();
         // Check whether it is the owner
         if(!seller.getId().equals(item.getUser().getId()))
             return false;
         // Set status to "sold"
         item.setStatus(1);
+        itemDao.save(item);
         // Generate sell record
-        sellRecordDao.save(new SellRecord(seller.getId(),bid.getUser().getId(),true));
+        sellRecordDao.save(new SellRecord(seller.getId(),bid.getUser().getId(),false,bid));
         // Unfreeze other failed bids if they have not been unfreezed before
         List<Bid> others = bidDao.findByItemAndActive(item,true);
         System.out.println(others.remove(bid));
@@ -107,7 +112,7 @@ public class ItemServiceImp implements ItemService {
         }
         //Email buyer
         SimpleMailMessage s =  MailUtils.generateEmail(sender,
-                seller.getEmail(),"MuAuction",
+                buyer.getEmail(),"MuAuction",
                 "You've got this at auction"+'\n'+item.toString());
         javaMailSender.send(s);
         return true;
@@ -117,22 +122,28 @@ public class ItemServiceImp implements ItemService {
     public boolean confirmReceipt(Long bidId) {
         User buyer = (User) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
         Bid bid = bidDao.getOne(bidId);
+        SellRecord record = bid.getSellRecord();
         // Received item cannot be reconfirmed
-        if(bid.getSellRecord().isReceived())
+        if(record.isReceived())
             return false;
         // Set status of bid
-        bid.setActive(false);
+        bid.setActive(true);
         bidDao.save(bid);
+        // Set status of sell record
+        record.setReceived(true);
+        sellRecordDao.save(record);
         // Reduce buyer's balance
         buyer.setFrozenBalance(buyer.getFrozenBalance()-bid.getPrice());
         buyer.setBalance(buyer.getBalance()-bid.getPrice());
+        userDao.save(buyer);
         // Increase seller's balance
         User seller = bid.getItem().getUser();
         seller.setBalance(seller.getBalance()+bid.getPrice());
+        userDao.save(seller);
         // Email seller
         Item item = bid.getItem();
         SimpleMailMessage s =  MailUtils.generateEmail(sender,
-                item.getUser().getEmail(),"MuAuction",
+                seller.getEmail(),"MuAuction",
                 "The seller has received the good: "+item.toString());
         javaMailSender.send(s);
         return true;

@@ -30,9 +30,10 @@ public class SellRecord {
     @JoinColumn(name = "bid_id", referencedColumnName = "id")
     private Bid bid;
 
-    public SellRecord(Long sellerId, Long buyerId, boolean isReceived) {
+    public SellRecord(Long sellerId, Long buyerId, boolean isReceived,Bid bid) {
         this.sellerId = sellerId;
         this.buyerId = buyerId;
         this.isReceived = isReceived;
+        this.bid = bid;
     }
 }

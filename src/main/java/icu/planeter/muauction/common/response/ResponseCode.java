@@ -24,7 +24,7 @@ public enum ResponseCode {
     Sold(2002,"Item have been sold"),
     UnPassed(2003,"UnPassed"),
     BalanceNotEnough(2004,"Insufficient unfrozen balance"),
-    DuplicateConfirm(2005,"You can't confirm receipt twice"),
+    DuplicateConfirm(2005,"You can not confirm receipt twice"),
     BelowReservePrice(2006,"The bid is below the reserve price"),
     UploadFailed(3004,"Upload Failed");
 

@@ -90,8 +90,8 @@ public class ItemController {
     }
 
     @PutMapping("/item/sell")
-    Response<Item> sell(@RequestParam Long itemId) {
-        if (itemService.sellOne(itemId)) {
+    Response<Item> sell(@RequestParam Long bidId) {
+        if (itemService.sellOne(bidId)) {
             return new Response<>(ResponseCode.SUCCESS);
         } else return new Response<>(ResponseCode.NoSuchPermission);//Not the owner
     }
