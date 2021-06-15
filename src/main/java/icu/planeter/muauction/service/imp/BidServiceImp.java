@@ -32,12 +32,17 @@ public class BidServiceImp implements BidService {
     public int bid(double price, Long itemId, String address, String comment) {
         User user = (User) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
         Item item = itemDao.getOne(itemId);
-        if (user.getUnfrozenBalance() < price)
-            return 2;//Balance Not Enough
-        else if(item.getStatus() == 1){
+        if (item.getStatus() == 1) {
             return 0;//Item have been sold
-        } else{
+        } else if (item.getPrice() > price) {
+            return 3;// Below the minimum price
+        } else if (price > user.getUnfrozenBalance()) {
+            return 2;//Balance Not Enough
+        } else {
             bidDao.save(new Bid(user, price, item, address, comment, true));
+            double orgin = user.getFrozenBalance();
+            user.setFrozenBalance(orgin + price);
+            userDao.save(user);
             return 1;//Success
         }
     }
@@ -54,16 +59,16 @@ public class BidServiceImp implements BidService {
     }
 
     @Override
-    public boolean cancel(Long bidId) {
+    public boolean cancel (Long bidId) {
         User user = (User) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
         Bid bid = bidDao.getOne(bidId);
         // Check whether it is the bid user
-        if(!user.getId().equals(bid.getUser().getId()))
+        if (!user.getId().equals(bid.getUser().getId()))
             return false;
         // Not activated, Unfreezing some balance
-        if (bid.getActive()){
+        if (bid.getActive()) {
             bidDao.inactivate(bidId);
-            user.setFrozenBalance(user.getFrozenBalance()-bid.getPrice());
+            user.setFrozenBalance(user.getFrozenBalance() - bid.getPrice());
             userDao.save(user);
         }
         return true;

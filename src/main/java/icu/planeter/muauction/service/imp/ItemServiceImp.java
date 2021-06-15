@@ -105,6 +105,11 @@ public class ItemServiceImp implements ItemService {
         for(Bid b:others){
             bidService.cancel(b.getId());
         }
+        //Email buyer
+        SimpleMailMessage s =  MailUtils.generateEmail(sender,
+                seller.getEmail(),"MuAuction",
+                "You've got this at auction"+'\n'+item.toString());
+        javaMailSender.send(s);
         return true;
     }
 
@@ -124,6 +129,12 @@ public class ItemServiceImp implements ItemService {
         // Increase seller's balance
         User seller = bid.getItem().getUser();
         seller.setBalance(seller.getBalance()+bid.getPrice());
+        // Email seller
+        Item item = bid.getItem();
+        SimpleMailMessage s =  MailUtils.generateEmail(sender,
+                item.getUser().getEmail(),"MuAuction",
+                "The seller has received the good: "+item.toString());
+        javaMailSender.send(s);
         return true;
     }
 
@@ -135,12 +146,12 @@ public class ItemServiceImp implements ItemService {
 
             matchQuery = QueryBuilders.multiMatchQuery(key, "name", "detail", "tags").analyzer("ik_max_word");
 
-            TermQueryBuilder termQuery = QueryBuilders.termQuery("verified", true);
+            TermQueryBuilder termQuery = QueryBuilders.termQuery("status", 0);
             totalFilter = QueryBuilders.boolQuery()
                     .filter(matchQuery)
                     .must(termQuery);
         } else {
-            TermQueryBuilder termQuery = QueryBuilders.termQuery("verified", true);
+            TermQueryBuilder termQuery = QueryBuilders.termQuery("status", 0);
             totalFilter = QueryBuilders.boolQuery()
                     .must(termQuery);
         }
@@ -150,7 +161,7 @@ public class ItemServiceImp implements ItemService {
         } else if (sortOrder.equals("DESC")) {
             order = SortOrder.DESC;
         }
-        return elasticsearchUtils.searchListData("item",
+        return elasticsearchUtils.searchListData("muauction_item",
                 new SearchSourceBuilder().query(totalFilter),
                 size,
                 from,

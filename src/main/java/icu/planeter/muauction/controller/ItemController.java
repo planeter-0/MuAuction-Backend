@@ -3,11 +3,15 @@ package icu.planeter.muauction.controller;
 
 import icu.planeter.muauction.common.response.Response;
 import icu.planeter.muauction.common.response.ResponseCode;
+import icu.planeter.muauction.common.utils.MailUtils;
 import icu.planeter.muauction.entity.Item;
 import icu.planeter.muauction.entity.User;
 import icu.planeter.muauction.service.ItemService;
 import org.apache.shiro.SecurityUtils;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -23,7 +27,10 @@ import java.util.*;
 public class ItemController {
     @Resource
     ItemService itemService;
-
+    @Resource
+    private JavaMailSender javaMailSender;
+    @Value("${spring.mail.properties.from}")
+    private String sender;
 
 
     /**
@@ -60,7 +67,7 @@ public class ItemController {
      * @param text Search items
      * @return List<Map < String, Object>> namely Item(Json Str)
      */
-    @GetMapping("/search")
+    @GetMapping("/item/search")
     public Response<List<Map<String, Object>>> getAllVerifiedItem(@RequestParam String text,
                                                                   @RequestParam(defaultValue = "10") Integer size,
                                                                   @RequestParam(defaultValue = "0") Integer from,
@@ -78,20 +85,21 @@ public class ItemController {
      */
     @GetMapping("/item/{itemId}")
     Response<Item> getItem(@PathVariable Long itemId) {
-        return new Response<>(ResponseCode.SUCCESS, itemService.getItem(itemId));
+        Item item = itemService.getItem(itemId);
+        return new Response<>(ResponseCode.SUCCESS, item);
     }
 
     @PutMapping("/item/sell")
     Response<Item> sell(@RequestParam Long itemId) {
-        if(itemService.sellOne(itemId))
+        if (itemService.sellOne(itemId)) {
             return new Response<>(ResponseCode.SUCCESS);
-        else return  new Response<>(ResponseCode.NoSuchPermission);//Not the owner
+        } else return new Response<>(ResponseCode.NoSuchPermission);//Not the owner
     }
 
     @PutMapping("/item/confirmReceipt")
     public Response<Object> confirmReceipt(@RequestParam Long bidId) {
         // Try to transfer the fund of the bid if receipt not confirmed before
-        if(itemService.confirmReceipt(bidId)){
+        if (itemService.confirmReceipt(bidId)) {
             return new Response<>(ResponseCode.SUCCESS);
         }
         // Cannot confirmed receipt again

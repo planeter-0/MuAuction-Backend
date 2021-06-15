@@ -2,6 +2,7 @@ package icu.planeter.muauction.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,6 +18,7 @@ import java.util.Date;
  */
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(value={"hibernateLazyInitializer","handler"})
 @Entity
 public class Item {
     @Id

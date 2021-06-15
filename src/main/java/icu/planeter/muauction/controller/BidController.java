@@ -40,6 +40,8 @@ public class BidController {
             return new Response<>(ResponseCode.SUCCESS);
         else if (flag == 2)
             return new Response<>(ResponseCode.BalanceNotEnough);
+        else if(flag == 3)
+            return new Response<>(ResponseCode.BelowReservePrice);
         else
             return new Response<>(ResponseCode.Sold);
     }
