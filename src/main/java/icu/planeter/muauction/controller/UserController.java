@@ -6,6 +6,7 @@ import icu.planeter.muauction.common.response.ResponseCode;
 import icu.planeter.muauction.dto.UserDetail;
 import icu.planeter.muauction.entity.User;
 import icu.planeter.muauction.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import javax.annotation.Resource;
  * @status OK
  */
 @RestController
+@Slf4j
 public class UserController {
     @Resource
     UserRepository userDao;
@@ -33,6 +35,7 @@ public class UserController {
         user.setProfile(detail.getProfile());
         user.setIcon(detail.getIcon());
         userDao.save(user);
+        log.info(user.getEmail()+" edit details SUCCESS");
         return new Response<>(ResponseCode.SUCCESS);
     }
 }

@@ -5,6 +5,7 @@ import icu.planeter.muauction.common.response.ResponseCode;
 import icu.planeter.muauction.dto.UserInfo;
 import icu.planeter.muauction.entity.User;
 import icu.planeter.muauction.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  * @status OK
  */
 @RestController
+@Slf4j
 public class LoginController {
     @Resource
     UserService userService;
@@ -60,6 +62,7 @@ public class LoginController {
         } catch (Exception e) {
             return new Response<>(ResponseCode.FAILED);
         }
+        log.info(user.getEmail()+" login SUCCESS");
         return new Response<>(ResponseCode.SUCCESS, user);
     }
     /**

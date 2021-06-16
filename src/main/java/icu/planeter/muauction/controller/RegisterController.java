@@ -65,6 +65,7 @@ public class RegisterController {
         }
         // Save user in database, password hashed by Bcrypt algorithm
         userService.register(email,password);
+        log.info(email+" register SUCCESS");
         return new Response<>(ResponseCode.SUCCESS);
     }
 }

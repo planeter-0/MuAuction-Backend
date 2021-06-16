@@ -3,14 +3,13 @@ package icu.planeter.muauction.controller;
 
 import icu.planeter.muauction.common.response.Response;
 import icu.planeter.muauction.common.response.ResponseCode;
-import icu.planeter.muauction.common.utils.MailUtils;
 import icu.planeter.muauction.entity.Item;
 import icu.planeter.muauction.entity.User;
 import icu.planeter.muauction.service.ItemService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +23,7 @@ import java.util.*;
  * @status dev
  */
 @RestController
+@Slf4j
 public class ItemController {
     @Resource
     ItemService itemService;
@@ -47,6 +47,7 @@ public class ItemController {
             e.printStackTrace();
             return new Response<>(ResponseCode.FAILED);
         }
+        log.info("Auction item SUCCESS");
         return new Response<>(ResponseCode.SUCCESS);
     }
 
@@ -58,6 +59,7 @@ public class ItemController {
     @GetMapping("/item/getMine")
     public Response<Map<String, List<Item>>> getMine() {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
+        log.info("Get my items SUCCESS");
         return new Response<>(ResponseCode.SUCCESS, itemService.getMine(user));
     }
 
@@ -73,6 +75,7 @@ public class ItemController {
                                                                   @RequestParam(defaultValue = "0") Integer from,
                                                                   @RequestParam(defaultValue = "") String sortField,
                                                                   @RequestParam(defaultValue = "") String sortOrder) {
+        log.info("Search SUCCESS");
         return new Response<>(ResponseCode.SUCCESS, itemService.search(text, size, from, sortField, sortOrder));
     }
 
@@ -86,12 +89,14 @@ public class ItemController {
     @GetMapping("/item/{itemId}")
     Response<Item> getItem(@PathVariable Long itemId) {
         Item item = itemService.getItem(itemId);
+        log.info("Get Item by id SUCCESS");
         return new Response<>(ResponseCode.SUCCESS, item);
     }
 
     @PutMapping("/item/sell")
     Response<Item> sell(@RequestParam Long bidId) {
         if (itemService.sellOne(bidId)) {
+            log.info("Sell item SUCCESS");
             return new Response<>(ResponseCode.SUCCESS);
         } else return new Response<>(ResponseCode.NoSuchPermission);//Not the owner
     }
@@ -100,9 +105,11 @@ public class ItemController {
     public Response<Object> confirmReceipt(@RequestParam Long bidId) {
         // Try to transfer the fund of the bid if receipt not confirmed before
         if (itemService.confirmReceipt(bidId)) {
+            log.info("Confirm Receipt SUCCESS");
             return new Response<>(ResponseCode.SUCCESS);
         }
         // Cannot confirmed receipt again
+        log.warn("DuplicateConfirm");
         return new Response<>(ResponseCode.DuplicateConfirm);
     }
 }

@@ -65,8 +65,8 @@ spring:
     time-zone: GMT+8
 cors:
   origin: 127.0.0.1
-#logging:
-#  level:
-#    root: info
-#    file:
-#      path: ./logs
+logging:
+  level:
+    root: info
+  file:
+    path: ./logs

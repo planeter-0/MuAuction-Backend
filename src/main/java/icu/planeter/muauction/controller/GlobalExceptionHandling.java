@@ -9,15 +9,14 @@ package icu.planeter.muauction.controller;
 
 import icu.planeter.muauction.common.response.Response;
 import icu.planeter.muauction.common.response.ResponseCode;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authz.AuthorizationException;
-import org.bouncycastle.asn1.ocsp.ResponseData;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
-
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandling {
     /**
@@ -49,6 +48,7 @@ public class GlobalExceptionHandling {
         } else {
             e.printStackTrace();
         }
+        log.warn("No Such Entity");
         return r;
     }
 

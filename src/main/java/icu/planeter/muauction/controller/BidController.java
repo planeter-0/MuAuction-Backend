@@ -3,12 +3,8 @@ package icu.planeter.muauction.controller;
 import icu.planeter.muauction.common.response.Response;
 import icu.planeter.muauction.common.response.ResponseCode;
 import icu.planeter.muauction.entity.Bid;
-import icu.planeter.muauction.entity.User;
-import icu.planeter.muauction.repository.BidRepository;
-import icu.planeter.muauction.repository.ItemRepository;
 import icu.planeter.muauction.service.BidService;
-import icu.planeter.muauction.service.ItemService;
-import org.apache.shiro.SecurityUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,12 +16,11 @@ import java.util.List;
  * @date 2021/6/11 16:12
  * @status dev
  */
+@Slf4j
 @RestController
 public class BidController {
     @Resource
     private BidService bidService;
-    @Resource
-    private ItemService itemService;
 
     @PostMapping("/bidding")
     public Response<Object> bid(@RequestParam Long itemId, @RequestParam double price, @RequestParam String address, @RequestParam String comment) {
@@ -36,8 +31,10 @@ public class BidController {
             e.printStackTrace();
             return new Response<>(ResponseCode.FAILED);
         }
-        if (flag == 1)
+        if (flag == 1) {
+            log.info("Bid SUCCESS");
             return new Response<>(ResponseCode.SUCCESS);
+        }
         else if (flag == 2)
             return new Response<>(ResponseCode.BalanceNotEnough);
         else if(flag == 3)
@@ -55,6 +52,7 @@ public class BidController {
             e.printStackTrace();
             return new Response<>(ResponseCode.FAILED);
         }
+        log.info("Get my bids SUCCESS");
         return new Response<>(ResponseCode.SUCCESS, list);
     }
 
@@ -67,6 +65,7 @@ public class BidController {
             e.printStackTrace();
             return new Response<>(ResponseCode.FAILED);
         }
+        log.info("Get bid by itemId SUCCESS");
         return new Response<>(ResponseCode.SUCCESS, list);
     }
 
@@ -74,6 +73,7 @@ public class BidController {
     public Response<Object> cancel(@RequestParam Long bidId) {
         // Try to unfreeze the fund of the bid if it has not been unfreezed before
         if(bidService.cancel(bidId)){
+            log.info("Bid cancel SUCCESS");
             return new Response<>(ResponseCode.SUCCESS);
         }
         // Not your bid, you can not cancel

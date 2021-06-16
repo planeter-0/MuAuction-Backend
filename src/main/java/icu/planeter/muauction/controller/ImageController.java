@@ -3,6 +3,7 @@ package icu.planeter.muauction.controller;
 import icu.planeter.muauction.common.response.Response;
 import icu.planeter.muauction.common.response.ResponseCode;
 import icu.planeter.muauction.common.utils.QiniuUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.bouncycastle.asn1.ocsp.ResponseData;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.Objects;
  * @status dev
  */
 @RestController
+@Slf4j
 public class ImageController {
     /**
      * Upload image, return url
@@ -41,6 +43,7 @@ public class ImageController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        log.info("Upload image SUCCESS");
         return new Response<>(ResponseCode.SUCCESS, url);
     }
 }
