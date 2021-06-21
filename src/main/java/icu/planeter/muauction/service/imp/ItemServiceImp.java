@@ -81,13 +81,14 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public Map<String, List<Item>> getMine(User user) {
-        Map<String, List<Item>> resultMap = new HashMap<>();
+    public List<Item> getMine(User user) {
+//        Map<String, List<Item>> resultMap = new HashMap<>();
         List<Item> unsold = new ArrayList<>(itemDao.findByStatusAndUser(0, user));
         List<Item> sold = new ArrayList<>(itemDao.findByStatusAndUser(1, user));
-        resultMap.put("unsold",unsold);
-        resultMap.put("sold", sold);
-        return resultMap;
+//        resultMap.put("unsold",unsold);
+//        resultMap.put("sold", sold);
+        unsold.addAll(sold);
+        return unsold;
     }
 
     @Override

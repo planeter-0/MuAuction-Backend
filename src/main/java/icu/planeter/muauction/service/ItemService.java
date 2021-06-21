@@ -41,7 +41,7 @@ public interface ItemService {
      *
      * @return Map<Item type, Item list>
      */
-    Map<String, List<Item>> getMine(User user);
+    List<Item> getMine(User user);
 
     /**
      * Owner chooses a bid to sell

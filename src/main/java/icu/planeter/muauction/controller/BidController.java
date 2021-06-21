@@ -1,5 +1,6 @@
 package icu.planeter.muauction.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import icu.planeter.muauction.common.response.Response;
 import icu.planeter.muauction.common.response.ResponseCode;
 import icu.planeter.muauction.entity.Bid;
@@ -23,7 +24,11 @@ public class BidController {
     private BidService bidService;
 
     @PostMapping("/bidding")
-    public Response<Object> bid(@RequestParam Long itemId, @RequestParam double price, @RequestParam String address, @RequestParam String comment) {
+    public Response<Object> bid(@RequestBody String jsonStr) {
+        Long itemId = JSONObject.parseObject(jsonStr).getLong("itemId");
+        String comment = JSONObject.parseObject(jsonStr).getString("comment");
+        String address = JSONObject.parseObject(jsonStr).getString("address");
+        Double price = JSONObject.parseObject(jsonStr).getDouble("price");
         int flag = 0;
         try {
             flag = bidService.bid(price, itemId, address, comment);

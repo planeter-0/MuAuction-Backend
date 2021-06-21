@@ -39,13 +39,16 @@ public class RegisterController {
     public Response<Object> sendEmail(@RequestParam String email) {
         // Random generating 6-bit verification code
         String code = MailUtils.generateCode(6);
+        // Generating email
         SimpleMailMessage message = MailUtils.generateEmail
                 (sender, email,
                 "MuAuction Register",
                 "Hi, Your verification code is: "+code+", which is valid for five minutes (please ignore this email if not yours)");
         try {
+            // Send email
             javaMailSender.send(message);
             log.info("Send success!");
+            // Store 6-bit verification code
             redisTemplate.opsForValue().set("Register-"+email,code, 5, TimeUnit.MINUTES);
             return new Response<>(ResponseCode.SUCCESS);
         }catch (Exception e){

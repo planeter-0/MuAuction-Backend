@@ -63,11 +63,9 @@ public class DbShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         User user = (User) principalCollection.getPrimaryPrincipal();
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        //授予角色
         for (Role role : user.getRoles()) {
             simpleAuthorizationInfo.addRole(role.getName());
         }
-        //授予权限
         simpleAuthorizationInfo.addStringPermissions(permissionService.getPermissionsByUsername(user));
         return simpleAuthorizationInfo;
     }

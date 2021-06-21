@@ -12,6 +12,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(value={"hibernateLazyInitializer","handler"})
 @Entity
 public class User {
     @Id

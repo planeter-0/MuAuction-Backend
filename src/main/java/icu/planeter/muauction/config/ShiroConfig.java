@@ -59,7 +59,7 @@ public class ShiroConfig {
     }
 
 //    /**
-//     * 禁用session
+//     * session
 //     */
 //    @Bean
 //    protected SessionStorageEvaluator sessionStorageEvaluator() {
@@ -79,7 +79,7 @@ public class ShiroConfig {
     }
 
     /**
-     * 加入自定义jwt过滤器
+     * 加入自定义过滤器
      */
     @Bean("shiroFilter")
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, UserService userService) {
@@ -110,10 +110,8 @@ public class ShiroConfig {
 //        c.addPathDefinition("/searchItem","anon,cors");
 //        c.addPathDefinition("/image/**","anon,cors");
 //        //Jwt
-//        c.addPathDefinition("/**", "noSessionCreation,jwt,xss,cors");
-
         //Close Jwt in order to reduce the front-end work :)
-        c.addPathDefinition("/**","anon,cors,xss");
+        c.addPathDefinition("/**","anon,cors");
         return c;
     }
     /**

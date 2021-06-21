@@ -1,5 +1,6 @@
 package icu.planeter.muauction.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +29,7 @@ public class SellRecord {
 
     @OneToOne
     @JoinColumn(name = "bid_id", referencedColumnName = "id")
+    @JsonIgnore
     private Bid bid;
 
     public SellRecord(Long sellerId, Long buyerId, boolean isReceived,Bid bid) {

@@ -89,7 +89,7 @@ public class QiniuUtils {
             Response response = uploadManager.put(file,key,upToken,null, null);
             //解析上传成功的结果
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-            return origin+putRet.key;
+            return "http://"+origin+'/'+putRet.key;
         } catch (QiniuException ex) {
             Response r = ex.response;
             log.warn(r.toString());

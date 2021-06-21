@@ -3,8 +3,10 @@ package icu.planeter.muauction.controller;
 
 import icu.planeter.muauction.common.response.Response;
 import icu.planeter.muauction.common.response.ResponseCode;
+import icu.planeter.muauction.entity.Bid;
 import icu.planeter.muauction.entity.Item;
 import icu.planeter.muauction.entity.User;
+import icu.planeter.muauction.service.BidService;
 import icu.planeter.muauction.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -27,6 +29,8 @@ import java.util.*;
 public class ItemController {
     @Resource
     ItemService itemService;
+    @Resource
+    BidService bidService;
     @Resource
     private JavaMailSender javaMailSender;
     @Value("${spring.mail.properties.from}")
@@ -57,10 +61,15 @@ public class ItemController {
      * @return Map<String, List < Item>>
      */
     @GetMapping("/item/getMine")
-    public Response<Map<String, List<Item>>> getMine() {
-        User user = (User) SecurityUtils.getSubject().getPrincipal();
+    public Response<Map<String,Object>> getMine() {
+        User user = (User) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+        Map<String,Object> results = new HashMap<>();
         log.info("Get my items SUCCESS");
-        return new Response<>(ResponseCode.SUCCESS, itemService.getMine(user));
+        List<Bid> myBids = bidService.getMine();
+        List<Item> myItems = itemService.getMine(user);
+        results.put("myBids", myBids);
+        results.put("myItems", myItems);
+        return new Response<>(ResponseCode.SUCCESS, results);
     }
 
     /**
