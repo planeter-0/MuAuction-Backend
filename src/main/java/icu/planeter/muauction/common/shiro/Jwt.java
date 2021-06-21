@@ -2,7 +2,7 @@ package icu.planeter.muauction.common.shiro;
 
 import org.apache.shiro.authc.HostAuthenticationToken;
 /**
- * @description: TODO
+ * @description: Jwt
  * @author Planeter
  * @date 2021/5/15 0:31
  * @status dev

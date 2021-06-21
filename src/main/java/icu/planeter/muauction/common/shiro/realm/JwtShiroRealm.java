@@ -3,7 +3,6 @@ package icu.planeter.muauction.common.shiro.realm;
 import icu.planeter.muauction.common.shiro.Jwt;
 import icu.planeter.muauction.common.shiro.matcher.JWTCredentialsMatcher;
 import icu.planeter.muauction.common.utils.JwtUtils;
-import icu.planeter.muauction.dto.JwtUser;
 import icu.planeter.muauction.entity.User;
 import icu.planeter.muauction.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
@@ -25,19 +24,19 @@ import javax.annotation.Resource;
 public class JwtShiroRealm extends AuthorizingRealm {
     @Resource
     UserService userService;
-    // 设置Matcher
+    // Set Matcher
     public JwtShiroRealm(){
         this.setCredentialsMatcher(new JWTCredentialsMatcher());
     }
     /**
-     * 设置支持的token
+     * Set supported token
      */
     @Override
     public boolean supports(AuthenticationToken token) {
         return token instanceof Jwt;
     }
     /**
-     * JWTRealm只负责登陆后的请求认证
+     * JWTRealm is only responsible for authentication after login
      * @param principals
      * @return
      */
@@ -47,7 +46,7 @@ public class JwtShiroRealm extends AuthorizingRealm {
     }
 
     /**
-     * 获取用户的salt值
+     * Get Token Salt
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authToken) throws AuthenticationException {

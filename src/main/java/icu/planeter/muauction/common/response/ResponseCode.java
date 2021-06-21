@@ -1,6 +1,5 @@
 package icu.planeter.muauction.common.response;
 
-import java.lang.invoke.WrongMethodTypeException;
 
 /**
  * @description: Response status codes with messages

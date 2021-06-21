@@ -13,7 +13,7 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import java.io.UnsupportedEncodingException;
 
 /**
- * @description: TODO
+ * @description: JWTCredentialsMatcher
  * @author Planeter
  * @date 2021/5/15 0:37
  * @status dev

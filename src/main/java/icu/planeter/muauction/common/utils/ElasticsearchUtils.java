@@ -2,7 +2,6 @@ package icu.planeter.muauction.common.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import icu.planeter.muauction.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -55,60 +54,40 @@ public class ElasticsearchUtils {
     @Resource
     private RestHighLevelClient restHighLevelClient;
 
-    /**
-     * 关键字
-     */
+
     public static final String KEYWORD = ".keyword";
 
-    /**
-     * 创建索引
-     *
-     * @param index 索引
-     * @return
-     */
+
     public boolean createIndex(String index) throws IOException {
         if (isIndexExist(index)) {
             log.error("Index is exits!");
             return false;
         }
-        //1.创建索引请求
+        //1.Create index request
         CreateIndexRequest request = new CreateIndexRequest(index);
-        //2.执行客户端请求
+        //2.Execute client request
         CreateIndexResponse response = restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
 
-        log.info("创建索引{}成功", index);
+        log.info("Create index {} SUCCESS", index);
 
         return response.isAcknowledged();
     }
 
-    /**
-     * 删除索引
-     *
-     * @param index
-     * @return
-     */
     public boolean deleteIndex(String index) throws IOException {
         if (!isIndexExist(index)) {
             log.error("Index is not exits!");
             return false;
         }
-        //删除索引请求
         DeleteIndexRequest request = new DeleteIndexRequest(index);
-        //执行客户端请求
         AcknowledgedResponse delete = restHighLevelClient.indices().delete(request, RequestOptions.DEFAULT);
 
-        log.info("删除索引{}成功", index);
+        log.info("Delete index {} SUCCESS", index);
 
         return delete.isAcknowledged();
     }
 
 
-    /**
-     * 判断索引是否存在
-     *
-     * @param index
-     * @return
-     */
+
     public boolean isIndexExist(String index) throws IOException {
 
         GetIndexRequest request = new GetIndexRequest(index);
@@ -118,25 +97,22 @@ public class ElasticsearchUtils {
 
 
     /**
-     * 数据添加，正定ID
+     * Add data
      *
-     * @param jsonObject 要增加的数据
-     * @param index      索引，类似数据库
-     * @param id         数据ID, 为null时es随机生成
+     * @param jsonObject Data to be added
+     * @param index
+     * @param id
      * @return
      */
     public String addData(JSONObject jsonObject, String index, String id) throws IOException {
 
-        //创建请求
         IndexRequest request = new IndexRequest(index);
-        //规则 put /test_index/_doc/1
         request.id(id);
         request.timeout(TimeValue.timeValueSeconds(1));
-        //将数据放入请求 json
         IndexRequest source = request.source(jsonObject, XContentType.JSON);
-        //客户端发送请求
+        //client send request
         IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
-        log.info("添加数据成功 索引为: {}, response 状态: {}, id为: {}", index, response.status().getStatus(), response.getId());
+        log.info("Add data SUCCESS index: {}, response status: {}, id: {}", index, response.status().getStatus(), response.getId());
         return response.getId();
     }
 

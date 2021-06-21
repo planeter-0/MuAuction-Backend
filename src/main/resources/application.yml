@@ -3,8 +3,8 @@ server:
 
 spring:
   redis:
-    host: 127.0.0.1
-    port: 6379
+    host: planeter.icu
+    port: 9003
     jedis:
       pool:
         max-active: 8
@@ -33,7 +33,7 @@ spring:
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/muauction?serverTimezone=GMT%2B8
+    url: jdbc:mysql://planeter.icu:9001/muauction?serverTimezone=GMT%2B8
     username: root
     password: 1a2b3c4dZDQ
 
@@ -56,10 +56,10 @@ spring:
 
   elasticsearch:
     rest:
-      uris: http://localhost:9200
+      uris: http://planeter.icu:9002
       username: elastic
       password: 123456
-      ipPort: 127.0.0.1:9200
+      ipPort: planeter.icu:9002
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

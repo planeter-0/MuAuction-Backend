@@ -16,7 +16,7 @@ import org.apache.shiro.util.ByteSource;
 import javax.annotation.Resource;
 
 /**
- * @description: TODO
+ * @description: DbShiroRealm
  * @author Planeter
  * @date 2021/5/15 0:33
  * @status dev
@@ -28,7 +28,7 @@ public class DbShiroRealm extends AuthorizingRealm {
     @Resource
     PermissionService permissionService;
 
-    //设置凭证匹配器Bcrypt
+    //Set credential matcher BcryptMatcher
     public DbShiroRealm() {
         this.setCredentialsMatcher(new BcryptCredentialsMatcher());
     }
